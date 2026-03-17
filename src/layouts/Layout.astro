@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"  />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="/css/fonts.css" rel="stylesheet">
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>
+
+<style>
+	:root {
+		--color-mauve-wine: #5c283a;
+		--color-crown-blue: #474b68;
+		--color-mocha-mous-shade: #dac5b7;
+		--color-vapor-blue: #c6c6c6;
+		--color-white: #ffffff;
+		--color-bright-white: #eef3fa;
+		--color-black: #000000;
+		--color-gray: #E5E7EB;
+		--color-oxford-white: #e8e7e7;
+		--gap-column: clamp(1.125rem, 0.841rem + 1.212vw, 1.875rem);
+		--font-unique: "TT Livret Display", sans-serif;
+		--font-title: "Inter", sans-serif;
+		--font-text: "Liter", sans-serif;
+		--transition-default: ease 0.3s;
+		--content-max-width: 100%;
+		--size-breakout: clamp(1rem, 0.0458rem + 4.0712vw, 2rem);
+	}
+	html,
+	body {
+		margin: 0;
+		font-family: var(--font-title);
+	}
+	img {
+		max-width: 100%;
+	}
+	
+</style>

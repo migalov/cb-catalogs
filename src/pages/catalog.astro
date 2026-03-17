@@ -1,0 +1,249 @@
+---
+import OldFilters from "../components/legacy/filters.astro";
+import OldCatalog from "../components/legacy/catalog.astro";
+import ProductCard from "../components/ProductCard.astro";
+import Layout from "../layouts/Layout.astro";
+import Checkbox from "../components/Checkbox.astro";
+---
+
+<Layout>
+    <OldFilters />
+    <OldCatalog />
+
+    <template id="catalog-page">
+        <div class="mpp-catalog-page">
+            <aside class="mpp-aside-filter" data-show="5">
+            </aside>
+            <main class="mpp-catalog-content"></main>
+        </div>
+    </template>
+
+
+   <div class="mpp-catalog-page">
+    <aside class="mpp-aside-filter" data-show="5">
+    </aside>
+    <main class="mpp-catalog-content">
+    </main>
+</div>
+<template id="part-filter">
+    <div class="mpp-part-filter">
+        <h3></h3>
+        <ul>
+        </ul>
+        <a href="#"></a>
+    </div>
+</template>
+<template id="filter-checkbox">
+    <Checkbox />
+  </template>
+  <template id="product-card">
+    <ProductCard />
+  </template>
+</Layout>
+
+<style lang="scss" is:global>
+    .mpp-filter-checkbox {
+        display: flex;
+        align-items: center;
+        column-gap: .75rem;
+        font-size: .875rem;
+        & input {
+            appearance: none;
+            margin: 0;
+            position: relative;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--color-black);
+            transition: var(--defaultAnimate);
+            &:checked {
+                background: var(--color-black);
+                // border: 2px solid var(--primaryColor);
+                &::before {
+                    content: "";
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 15px;
+                    height: 15px;
+                    background: url("/mark.svg") no-repeat center;
+                }
+            }
+        }
+
+        & :is(input, span) {
+            cursor: pointer;
+        }
+    }
+
+    .mpp-filter-block {
+        display: flex;
+        flex-direction: column;
+        row-gap: .5rem;
+        & h3 {
+            font-size: .875rem;
+            margin: 0;
+            font-family: "Montserrat", sans-serif;
+        }
+    }
+    .mpp-catalog-content {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 2rem;
+        @media (min-width: 992px) {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    .mpp-catalog-page {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        align-items: start;
+        column-gap: 2rem;
+        max-width: 992px;
+        margin: 0 auto;
+    }
+
+    .mpp-aside-filter {
+        position: sticky;
+        top: 0;
+        overflow-y: auto;
+        height: 100vh;
+        & ul {
+            padding: 0;
+        }
+    }
+
+    .mpp-part-filter {
+        & ul {
+            display: flex;
+            flex-direction: column;
+            row-gap: .44em;
+        }
+
+        & li {
+            &.hidden {
+                display: none;
+            }
+        }
+
+        & h3 {
+            font-size: 0.925rem;
+            font-family: var(--font-title);
+            font-weight: 500;
+        }
+    }
+</style>
+
+
+<script>
+    if (Boolean(document.querySelector(".tags-block")) && Boolean(document.querySelector(".widget-products__items"))) {
+
+    let oldCatalogBlock = document.querySelectorAll(".widget-products__items .widget-products__item");
+    let oldFilterComponents = document.querySelector(".tags-block")?.querySelectorAll(".tag-block");
+    let products = [];
+
+    const updateProductsData = () => {
+        oldCatalogBlock.forEach ( block => {
+            let href = block.querySelector("a").href;
+            let src = block.querySelectorAll("img")[0].src;
+            let srcHover = block.querySelectorAll("img")[1]?.src;
+            let price = block?.querySelector(".price")?.innerText.trim();
+            let title = block?.querySelector(".category-title")?.innerText.trim();
+            // let tag = block?.querySelector(".product-tag")?.innerText.trim();
+            let add_desc = block?.querySelector(".additional-description")?.innerHTML;
+            products.push({title, src, srcHover, href, price, add_desc})
+        });
+
+        console.log(products);
+    }
+
+    updateProductsData();
+
+    const observerOptions = {
+    childList: true,
+    subtree: true,
+    };
+
+    const observer = new MutationObserver(updateProductsData);
+    observer.observe(document.querySelector(".widget-products"), observerOptions);
+    
+
+    products.forEach( product => {
+        let newProductCard = document.querySelector('#product-card').content.cloneNode(true);
+        newProductCard.querySelector(".cb-product-card__title").innerText = product.title;
+        newProductCard.querySelector(".cb-product-card a").href = product.href;
+        newProductCard.querySelectorAll("img")[0].src = product.src;
+        newProductCard.querySelectorAll("img")[1].src = product.srcHover ? product.srcHover : "";
+        newProductCard.querySelector(".cb-product-card__price-value").innerText = `${product.price}`;
+        // newProductCard.querySelector(".cb-product-card__tags").innerText = tag;
+        newProductCard.querySelector(".cb-product-card__additional-description").innerHTML = `${product.add_desc}`;
+        document.querySelector(".mpp-catalog-content").append(newProductCard);
+    })
+
+    oldFilterComponents.forEach((component, index) => {
+
+        let partFilter = document.querySelector('#part-filter')?.content.cloneNode(true);
+
+        let title = document.createElement("h3");
+        partFilter.querySelector("h3").innerText = component.querySelector(".block-title")?.innerText;
+
+        
+        document.querySelector(".mpp-aside-filter")?.appendChild(partFilter);
+        partFilter.appendChild(title);
+
+        component.querySelectorAll(".tags-for-group__item").forEach( _checkbox => {
+            let checkbox = document.querySelector("#filter-checkbox").content.cloneNode(true);
+            let label = _checkbox.querySelector(".custom-label")?.textContent;
+            let tag = _checkbox.querySelector("input").getAttribute("data-tag");
+            checkbox.querySelector("span").innerText = label;
+            checkbox.querySelector("input").setAttribute("value", tag);
+            document.querySelectorAll(".mpp-part-filter ul")[index]?.appendChild(checkbox);
+            
+        });
+    });
+
+    let showCheckboxes = Number(document.querySelector(".mpp-aside-filter")?.getAttribute("data-show"));
+
+    document.querySelectorAll(".mpp-part-filter").forEach( (part) => {
+
+        part.querySelectorAll("li").forEach( (_checkbox, index) => {
+            if (index >= showCheckboxes) {
+                _checkbox.classList.add("hidden", "showedHide");
+            }
+        });
+
+        if (part.querySelectorAll("li").length > showCheckboxes)
+            part.querySelector("a")?.setAttribute("data-show-text", `Показать (${part.querySelectorAll("li").length})`);
+            part.querySelector("a")?.setAttribute("data-hide-text", `Скрыть`);
+            part.querySelector("a").innerText = part.querySelector("a").getAttribute("data-show-text");
+        part.querySelector("a")?.addEventListener("click", (e) => {
+            e.preventDefault();
+            part.querySelectorAll(".showedHide").forEach( _checkboxes => {
+                _checkboxes.classList.toggle("hidden");
+                _checkboxes.classList.contains("hidden") ?
+                    part.querySelector("a").innerText = part.querySelector("a").getAttribute("data-show-text") :
+                    part.querySelector("a").innerText = part.querySelector("a").getAttribute("data-hide-text");
+                
+            });
+            
+        })
+        
+    });
+
+    document.querySelectorAll(".mpp-catalog-page .mpp-aside-filter .mpp-filter-checkbox input").forEach( checkbox => {
+        checkbox.addEventListener("click", (e) => {
+            console.log(e.target);
+            
+            document.querySelectorAll(`.tags-block [data-tag=${checkbox.value}]`)[0].click();
+            document.querySelectorAll(`.tags-block [data-tag=${checkbox.value}]`)[1].click();
+        })
+    });
+
+    
+
+
+}
+
+
+</script>
