@@ -100,7 +100,7 @@ import Checkbox from "../components/Checkbox.astro";
         grid-template-columns: 1fr 3fr;
         align-items: start;
         column-gap: 2rem;
-        max-width: 992px;
+        max-width: 1405px;
         margin: 0 auto;
     }
 
@@ -150,9 +150,9 @@ import Checkbox from "../components/Checkbox.astro";
             let srcHover = block.querySelectorAll("img")[1]?.src;
             let price = block?.querySelector(".price")?.innerText.trim();
             let title = block?.querySelector(".category-title")?.innerText.trim();
-            // let tag = block?.querySelector(".product-tag")?.innerText.trim();
+            let tag = block?.querySelectorAll(".product-tag")[0]?.innerText.trim();
             let add_desc = block?.querySelector(".additional-description")?.innerHTML;
-            products.push({title, src, srcHover, href, price, add_desc})
+            products.push({title, src, tag, srcHover, href, price, add_desc})
         });
 
         console.log(products);

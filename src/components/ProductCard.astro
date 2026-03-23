@@ -19,6 +19,7 @@ const {title, src, pages, price, href} = Astro.props;
 <style lang="scss">
 
     .cb-product-card {
+        --row-gap-text: 0em;
         border-radius: .3rem;
         transition: var(--defaultAnimate);
 
@@ -61,9 +62,9 @@ const {title, src, pages, price, href} = Astro.props;
         // font-size: .7rem;
         display: flex;
         flex-direction: column;
-        gap: .54em;
+        gap: var(--row-gap-text);
         font-size: .8125rem;
-        font-family: var(--font-title);
+        font-family: var(--font-text);
         color: #7a7a7a;
     }
     .cb-product-card__info {
@@ -79,11 +80,14 @@ const {title, src, pages, price, href} = Astro.props;
         font-family: var(--font-text);
         font-size: 0.825rem;
         font-weight: 400;
-        // margin: 0;
+        margin: 0 0 var(--row-gap-text);
         // width: 100%;
         // font-size: .75rem;
     }
     .cb-product-card__price {
+        margin: 1em 0 0.65em;
+        font-size: 1.25rem;
+        font-weight: 500;
         // margin-top: auto;
         // font-weight: 700;
         // color: var(--primaryColor)
