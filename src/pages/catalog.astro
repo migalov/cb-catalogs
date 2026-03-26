@@ -11,22 +11,22 @@ import Checkbox from "../components/Checkbox.astro";
     <OldCatalog />
 
     <template id="catalog-page">
-        <div class="mpp-catalog-page">
-            <aside class="mpp-aside-filter" data-show="5">
+        <div class="cb-catalog-page">
+            <aside class="cb-aside-filter" data-show="5">
             </aside>
-            <main class="mpp-catalog-content"></main>
+            <main class="cb-catalog-content"></main>
         </div>
     </template>
 
 
-   <div class="mpp-catalog-page">
-    <aside class="mpp-aside-filter" data-show="5">
+   <div class="cb-catalog-page">
+    <aside class="cb-aside-filter cb-scrollbar" data-show="5">
     </aside>
-    <main class="mpp-catalog-content">
+    <main class="cb-catalog-content">
     </main>
 </div>
 <template id="part-filter">
-    <div class="mpp-part-filter">
+    <div class="cb-part-filter">
         <h3></h3>
         <ul>
         </ul>
@@ -42,7 +42,7 @@ import Checkbox from "../components/Checkbox.astro";
 </Layout>
 
 <style lang="scss" is:global>
-    .mpp-filter-checkbox {
+    .cb-filter-checkbox {
         display: flex;
         align-items: center;
         column-gap: .75rem;
@@ -76,7 +76,7 @@ import Checkbox from "../components/Checkbox.astro";
         }
     }
 
-    .mpp-filter-block {
+    .cb-filter-block {
         display: flex;
         flex-direction: column;
         row-gap: .5rem;
@@ -86,7 +86,7 @@ import Checkbox from "../components/Checkbox.astro";
             font-family: "Montserrat", sans-serif;
         }
     }
-    .mpp-catalog-content {
+    .cb-catalog-content {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 2rem;
@@ -95,7 +95,7 @@ import Checkbox from "../components/Checkbox.astro";
         }
     }
 
-    .mpp-catalog-page {
+    .cb-catalog-page {
         display: grid;
         grid-template-columns: 1fr 3fr;
         align-items: start;
@@ -104,7 +104,7 @@ import Checkbox from "../components/Checkbox.astro";
         margin: 0 auto;
     }
 
-    .mpp-aside-filter {
+    .cb-aside-filter {
         position: sticky;
         top: 0;
         overflow-y: auto;
@@ -114,7 +114,7 @@ import Checkbox from "../components/Checkbox.astro";
         }
     }
 
-    .mpp-part-filter {
+    .cb-part-filter {
         & ul {
             display: flex;
             flex-direction: column;
@@ -131,6 +131,9 @@ import Checkbox from "../components/Checkbox.astro";
             font-size: 0.925rem;
             font-family: var(--font-title);
             font-weight: 500;
+        }
+        & > a {
+            color: var(--color-black)
         }
     }
 </style>
@@ -178,7 +181,7 @@ import Checkbox from "../components/Checkbox.astro";
         newProductCard.querySelector(".cb-product-card__price-value").innerText = `${product.price}`;
         // newProductCard.querySelector(".cb-product-card__tags").innerText = tag;
         newProductCard.querySelector(".cb-product-card__additional-description").innerHTML = `${product.add_desc}`;
-        document.querySelector(".mpp-catalog-content").append(newProductCard);
+        document.querySelector(".cb-catalog-content").append(newProductCard);
     })
 
     oldFilterComponents.forEach((component, index) => {
@@ -189,7 +192,7 @@ import Checkbox from "../components/Checkbox.astro";
         partFilter.querySelector("h3").innerText = component.querySelector(".block-title")?.innerText;
 
         
-        document.querySelector(".mpp-aside-filter")?.appendChild(partFilter);
+        document.querySelector(".cb-aside-filter")?.appendChild(partFilter);
         partFilter.appendChild(title);
 
         component.querySelectorAll(".tags-for-group__item").forEach( _checkbox => {
@@ -198,14 +201,14 @@ import Checkbox from "../components/Checkbox.astro";
             let tag = _checkbox.querySelector("input").getAttribute("data-tag");
             checkbox.querySelector("span").innerText = label;
             checkbox.querySelector("input").setAttribute("value", tag);
-            document.querySelectorAll(".mpp-part-filter ul")[index]?.appendChild(checkbox);
+            document.querySelectorAll(".cb-part-filter ul")[index]?.appendChild(checkbox);
             
         });
     });
 
-    let showCheckboxes = Number(document.querySelector(".mpp-aside-filter")?.getAttribute("data-show"));
+    let showCheckboxes = Number(document.querySelector(".cb-aside-filter")?.getAttribute("data-show"));
 
-    document.querySelectorAll(".mpp-part-filter").forEach( (part) => {
+    document.querySelectorAll(".cb-part-filter").forEach( (part) => {
 
         part.querySelectorAll("li").forEach( (_checkbox, index) => {
             if (index >= showCheckboxes) {
@@ -231,7 +234,7 @@ import Checkbox from "../components/Checkbox.astro";
         
     });
 
-    document.querySelectorAll(".mpp-catalog-page .mpp-aside-filter .mpp-filter-checkbox input").forEach( checkbox => {
+    document.querySelectorAll(".cb-catalog-page .cb-aside-filter .cb-filter-checkbox input").forEach( checkbox => {
         checkbox.addEventListener("click", (e) => {
             console.log(e.target);
             

@@ -1,0 +1,34 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CollectionBannerSlider from "../components/CollectionBannerSlider.astro";
+---
+
+<Layout>
+  <div class="content-grid">
+    <section>
+      <CollectionBannerSlider
+        ariaLabel="Collections"
+        initialIndex={0}
+        animationMs={500}
+        slides={[
+          {
+            imageSrc: "/img/1.png",
+            imageAlt: "Premium",
+            title: "Коллекция Premium",
+            description: "Новая эстетика, новые ощущения, новая технология и чувственная роскошь.",
+            primaryLink: { href: "#", text: "Посмотреть коллекцию" },
+            secondaryLink: { href: "#", text: "Задать вопрос" },
+          },
+          {
+            imageSrc: "/img/2.png",
+            imageAlt: "Light",
+            title: "Коллекция Light",
+            description: "Легкая и выразительная, как сама жизнь. Фотодуховные души для творческих историй.",
+            primaryLink: { href: "#", text: "Посмотреть коллекцию" },
+            secondaryLink: { href: "#", text: "Задать вопрос" },
+          },
+        ]}
+      />
+    </section>
+  </div>
+</Layout>

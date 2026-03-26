@@ -1,10 +1,10 @@
 ---
-const {title, src, pages, price, href} = Astro.props;
+const {title, src, pages, price, href, tag = "Новое"} = Astro.props;
 ---
 <div class="cb-product-card">
     <a href={href}>
         <img src={src} />
-        <img src="" />
+        <img src="#" />
         <div class="cb-product-card__info">
             <div class="cb-product-card__price">
                 <span class="cb-product-card__price-value">{price}</span>
@@ -13,6 +13,7 @@ const {title, src, pages, price, href} = Astro.props;
             <h3 class="cb-product-card__title">{title}</h3>
             <span class="cb-product-card__additional-description" set:html={pages} />
         </div>
+        <div class="cb-product-card__tag">{tag}</div>
     </a>
 </div>
 
@@ -20,6 +21,7 @@ const {title, src, pages, price, href} = Astro.props;
 
     .cb-product-card {
         --row-gap-text: 0em;
+
         border-radius: .3rem;
         transition: var(--defaultAnimate);
 
@@ -53,13 +55,8 @@ const {title, src, pages, price, href} = Astro.props;
             text-decoration: none;
             height: 100%;
         }
-        &:hover {
-            //box-shadow: var(--shadow-default-hover);
-        }
     }
     .cb-product-card__additional-description {
-        // margin-top: auto;
-        // font-size: .7rem;
         display: flex;
         flex-direction: column;
         gap: var(--row-gap-text);
@@ -67,29 +64,24 @@ const {title, src, pages, price, href} = Astro.props;
         font-family: var(--font-text);
         color: #7a7a7a;
     }
-    .cb-product-card__info {
-        // flex: 1;
-        // display: flex;
-        // flex-wrap: wrap;
-        // padding: 1rem 0;
-        // justify-content: space-between;
-        // font-size: .75rem;
-        // row-gap: .5em;
-    }
     .cb-product-card__title {
         font-family: var(--font-text);
         font-size: 0.825rem;
         font-weight: 400;
         margin: 0 0 var(--row-gap-text);
-        // width: 100%;
-        // font-size: .75rem;
     }
     .cb-product-card__price {
         margin: 1em 0 0.65em;
         font-size: 1.25rem;
         font-weight: 500;
-        // margin-top: auto;
-        // font-weight: 700;
-        // color: var(--primaryColor)
+    }
+    .cb-product-card__tag {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: .5rem;
+        padding: 1.5em;
+        text-transform: uppercase;
+        font-family: var(--font-title);
     }
 </style>

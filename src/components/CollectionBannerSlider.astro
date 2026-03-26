@@ -1,0 +1,248 @@
+---
+type Slide = {
+  imageSrc: string;
+  imageAlt?: string;
+  title: string;
+  description: string;
+  primaryLink: { href: string; text: string };
+  secondaryLink: { href: string; text: string };
+};
+
+const {
+  slides,
+  ariaLabel = "Collection slider",
+  initialIndex = 0,
+  animationMs = 500,
+} = Astro.props as {
+  slides: Slide[];
+  ariaLabel?: string;
+  initialIndex?: number;
+  animationMs?: number;
+};
+
+const safeInitialIndex = Math.max(
+  0,
+  Math.min(slides?.length ? slides.length - 1 : 0, initialIndex),
+);
+---
+
+<section
+  class="cb-slider-banner-collection full-width-page"
+  role="group"
+  aria-label={ariaLabel}
+  data-cb-slider-animation-ms={animationMs}
+  style={`--cb-slider-fade-ms:${animationMs}ms`}
+>
+  <div class="splide__track full-width-page">
+    <ul class="cb-slider-banner-collection__list full-width-page" style={`--count:${slides?.length ?? 0}`}>
+      {slides?.map((s, i) => (
+        <li
+          class="cb-slide-collection full-width-page"
+          class:list={{ "is-active": i === safeInitialIndex }}
+          aria-hidden={i === safeInitialIndex ? "false" : "true"}
+        >
+          <img class="cb-slide-collection__image" src={s.imageSrc} alt={s.imageAlt ?? ""} />
+
+          <div class="cb-slide-collection__content">
+            <h3>{s.title}</h3>
+            <p>{s.description}</p>
+
+            <div class="cb-slide-collection__group-buttons">
+              <a class="cb-button-link cb-button-link cb-button-link--white" href={s.primaryLink.href}>
+                {s.primaryLink.text}
+              </a>
+              <a class="cb-button-link cb-button-link cb-button-link--white" href={s.secondaryLink.href}>
+                {s.secondaryLink.text}
+              </a>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <div class="cb-slider-banner-collection__arrows splide__arrows splide__arrows--ltr">
+      <button
+        class="splide__arrow splide__arrow--prev"
+        type="button"
+        aria-label="Previous slide"
+        data-cb-slider-prev
+      >
+        <svg width="28" height="52" viewBox="0 0 28 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M26.6211 50.0605L2.12109 25.5605L26.6211 1.06054"
+            stroke="white"
+            stroke-width="3"
+          ></path>
+        </svg>
+      </button>
+
+      <button
+        class="splide__arrow splide__arrow--next"
+        type="button"
+        aria-label="Next slide"
+        data-cb-slider-next
+      >
+        <svg width="28" height="52" viewBox="0 0 28 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M1.06055 1.06055L25.5605 25.5605L1.06055 50.0606"
+            stroke="white"
+            stroke-width="3"
+          ></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <style>
+    .cb-slider-banner-collection {
+      background-color: var(--color-mocha-mous-shade);
+    }
+    .cb-slider-banner-collection svg {
+      fill: transparent;
+    }
+    .cb-slider-banner-collection__list {
+      padding: 0;
+      margin: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .cb-slider-banner-collection__arrows .splide__arrow--prev svg {
+      transform: rotate(0);
+    }
+
+    .cb-slide-collection {
+      display: grid;
+      grid-template-areas: "txt img";
+      grid-template-columns: 1fr 1fr;
+      position: absolute;
+      width: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--cb-slider-fade-ms, 500ms) ease;
+    }
+    .cb-slide-collection :is(h3, p) {
+      font-family: var(--font-title);
+      font-weight: 400;
+      font-size: clamp(1rem, 0.8333rem + 0.7407vw, 1.5rem);
+      margin: 0 0 1.5em;
+    }
+    .cb-slide-collection p {
+      line-height: 1.4;
+    }
+    .cb-slide-collection.is-active {
+      opacity: 1;
+      pointer-events: auto;
+      z-index: 1;
+    }
+    @media (max-width: 767.99px) {
+      .cb-slide-collection {
+        display: block;
+      }
+    }
+
+    .cb-slide-collection__image {
+      grid-area: img;
+      width: 100%;
+      max-height: 440px;
+      object-fit: cover;
+      object-position: center;
+    }
+    @media (min-width: 768px) {
+      .cb-slide-collection__image {
+        height: 100%;
+      }
+    }
+    .cb-slide-collection__content {
+      grid-area: txt;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 2em;
+    }
+    .cb-slide-collection__group-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: clamp(1rem, 0.6667rem + 1.4815vw, 2rem);
+      text-transform: uppercase;
+    }
+    .cb-slide-collection__group-buttons > a {
+      font-weight: 500;
+    }
+  </style>
+
+  <script type="module">
+    const sliderRoot = document.currentScript?.parentElement;
+    if (sliderRoot) {
+      const slidesEls = Array.from(sliderRoot.querySelectorAll(".cb-slide-collection"));
+      if (!slidesEls.length) return;
+
+      let activeIndex = slidesEls.findIndex((el) => el.classList.contains("is-active"));
+      if (activeIndex < 0) activeIndex = 0;
+
+      const listEl = sliderRoot.querySelector(".cb-slider-banner-collection__list");
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const animationDurationMs = Number(sliderRoot.getAttribute("data-cb-slider-animation-ms")) || 500;
+      let isLocked = false;
+
+      const applyActive = (idx) => {
+        slidesEls.forEach((el, i) => el.classList.toggle("is-active", i === idx));
+      };
+
+      const measureAndLockHeight = () => {
+        if (!listEl) return;
+
+        // Slides are absolute + only change opacity, so we can measure all of them
+        // and lock the list height to the maximum to avoid height jumps on click.
+        const heights = slidesEls.map((el) => el.offsetHeight || 0);
+        const maxHeight = Math.max(...heights);
+        if (Number.isFinite(maxHeight) && maxHeight > 0) {
+          listEl.style.height = `${maxHeight}px`;
+        }
+      };
+
+      applyActive(activeIndex);
+      requestAnimationFrame(measureAndLockHeight);
+      window.addEventListener("load", () => requestAnimationFrame(measureAndLockHeight), { once: true });
+
+      let resizeRaf = 0;
+      window.addEventListener("resize", () => {
+        cancelAnimationFrame(resizeRaf);
+        resizeRaf = requestAnimationFrame(measureAndLockHeight);
+      });
+
+      const goTo = (nextIndex) => {
+        if (!slidesEls.length || isLocked) return;
+
+        const total = slidesEls.length;
+        const normalized = ((nextIndex % total) + total) % total;
+        if (normalized === activeIndex) return;
+
+        if (reduceMotion) {
+          slidesEls[activeIndex].classList.remove("is-active");
+          slidesEls[normalized].classList.add("is-active");
+          activeIndex = normalized;
+          return;
+        }
+
+        isLocked = true;
+        slidesEls[activeIndex].classList.remove("is-active");
+        slidesEls[normalized].classList.add("is-active");
+        activeIndex = normalized;
+
+        // Height stays locked; only opacity transitions.
+        window.setTimeout(() => {
+          isLocked = false;
+        }, animationDurationMs);
+      };
+
+      sliderRoot.querySelector("[data-cb-slider-prev]")?.addEventListener("click", () => goTo(activeIndex - 1));
+      sliderRoot.querySelector("[data-cb-slider-next]")?.addEventListener("click", () => goTo(activeIndex + 1));
+    }
+  </script>
+</section>
+

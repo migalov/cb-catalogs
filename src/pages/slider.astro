@@ -1,0 +1,253 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
+// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const sliders = [
+    {
+        collection: "Wedding",
+        description: "Это классика традиций в современной подаче свадебной фотокниги, созданной вручную с вниманием к деталям.",
+        href: "/kollekciya-svadebnaya",
+        src: "https://static0.wow2print.com/storage/1619/content/image/25385541269c3b095797182.24866237.png"
+    }
+    ,
+    {
+        collection: "Children",
+        description: "Фотокниги, в которых детство остается навсегда. Первая улыбка, шаг,  праздник, рисунок — каждая книга бережно сохраняет мгновения, которые  хочется пережить снова.",
+        href: "/kollekciya-children",
+        src: "https://static0.wow2print.com/storage/1619/content/image/118500847469c3b095bf9d22.72826938.png"
+    }
+    ,
+    {
+        collection: "Pattern",
+        description: "Это фотокниги в «одежде» с характером. Pattern (англ.) – повторяющийся  элемент узора, который может стать частью бесконечного орнамента.",
+        href: "/pattern-collection",
+        src: "https://static0.wow2print.com/storage/1619/content/image/161776534569c3b0961bf713.83770923.png"
+    }
+    ,
+    {
+        collection: "ECO",
+        description: "Простые линии, гармоничное сочетание природных цветов, фактур и личных  фотоисторий. Отсылка к природным мотивам — вечная тема оформления  в стиле эко.",
+        href: "/kollekciya-eko",
+        src: "https://static0.wow2print.com/storage/1619/content/image/176140578169c3b0965fadd0.96136005.png"
+    }
+    ,
+    {
+        collection: "Colorblock",
+        description: "Смелая геометрия цвета, вдохновленная приемами высокой моды и подиумных образов Ив Сен Лорана.",
+        href: "/kollekciya-kolorbloking",
+        src: "https://static0.wow2print.com/storage/1619/content/image/212739752369c3b096a126c0.76429056.png"
+    }
+    ,
+    {
+        collection: "La Couture",
+        description: "Коллекция фотокниг, где блок крепко сшивается нитями, как классическое  книжное издание.",
+        href: "/la-couture-collection",
+        src: "https://static0.wow2print.com/storage/1619/content/image/141414465669c3b096d30ae8.43931684.png"
+    }
+];
+---
+
+<Layout>
+    <div class="content-grid">
+        <div class="site-widget-instance site-widget-instance-433 full-width-page">
+            <div class="cb-slider-banner-collection full-width-page" role="group" aria-label="Splide Basic HTML Example">
+                <div class="splide__track full-width-page">
+                        <ul class="cb-slider-banner-collection__list full-width-page" style="--count: 1">
+                            {
+                                sliders.map( (slide, index) => 
+                                <>
+                                    <li class={`cb-slide-collection full-width-page ${index == 0 && "is-active"}`}>
+                                        <img class="cb-slide-collection__image" src={`${slide.src}`} alt="" />
+                                        <div class="cb-slide-collection__content">
+                                            <h3>Коллекция {slide.collection}</h3>
+                                            <p>{slide.description}</p>
+                                            <div class="cb-slide-collection__group-buttons">
+                                                <a class="cb-button-link cb-button-link cb-button-link--white" href={slide.href}>Посмотреть коллекцию</a>
+                                                <a class="cb-button-link cb-button-link cb-button-link--white" href="#">Задать вопрос</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </>
+                                )
+                            }
+                        </ul>
+                        <div class="cb-slider-banner-collection__arrows splide__arrows splide__arrows--ltr">
+                            <button
+                            class="splide__arrow splide__arrow--prev"
+                            type="button"
+                            aria-label="Previous slide"
+                            aria-controls="splide01-track"
+                            >
+                            <svg width="28" height="52" viewBox="0 0 28 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M26.6211 50.0605L2.12109 25.5605L26.6211 1.06054" stroke="white" stroke-width="3"/>
+                            </svg>  
+                            </button>
+                            <button
+                            class="splide__arrow splide__arrow--next"
+                            type="button"
+                            aria-label="Next slide"
+                            aria-controls="splide01-track"
+                            >
+                            <svg width="28" height="52" viewBox="0 0 28 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1.06055 1.06055L25.5605 25.5605L1.06055 50.0606" stroke="white" stroke-width="3"/>
+                                </svg>
+                            </button>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const sliderCollection = document.querySelector(".cb-slider-banner-collection");
+        if (sliderCollection) {
+            const slides = Array.from(sliderCollection.querySelectorAll(".cb-slide-collection")) as HTMLElement[];
+
+            // Активный слайд в разметке помечается классом `is-active`
+            let currentIndex = slides.findIndex((slide) => slide.classList.contains("is-active"));
+            if (currentIndex < 0) currentIndex = 0;
+
+            const listEl = sliderCollection.querySelector(".cb-slider-banner-collection__list") as HTMLElement | null;
+            const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            const TRANSITION_MS = 500; // Должно совпадать с `transition` в CSS
+
+            // Убедимся, что активный класс назначен хотя бы одному слайду
+            slides.forEach((slide, idx) => slide.classList.toggle("is-active", idx === currentIndex));
+
+            const setListHeightToSlide = (index: number) => {
+                if (!listEl) return;
+                const slide = slides[index];
+                if (!slide) return;
+                listEl.style.height = `${slide.offsetHeight}px`;
+            };
+
+            // Фиксируем высоту, чтобы при переключении слайдов не происходил "прыжок"
+            setListHeightToSlide(currentIndex);
+            window.requestAnimationFrame(() => setListHeightToSlide(currentIndex));
+            window.addEventListener("load", () => setListHeightToSlide(currentIndex), { once: true });
+
+            let isAnimating = false;
+            const setActiveIndex = (nextIndex: number) => {
+                if (!slides.length) return;
+                if (isAnimating) return;
+
+                const normalizedIndex = ((nextIndex % slides.length) + slides.length) % slides.length;
+                if (normalizedIndex === currentIndex) return;
+
+                if (prefersReducedMotion) {
+                    slides[currentIndex].classList.remove("is-active");
+                    slides[normalizedIndex].classList.add("is-active");
+                    currentIndex = normalizedIndex;
+                    setListHeightToSlide(currentIndex);
+                    return;
+                }
+
+                isAnimating = true;
+
+                // Зафиксируем текущую высоту до момента завершения анимации.
+                setListHeightToSlide(currentIndex);
+
+                slides[currentIndex].classList.remove("is-active");
+                slides[normalizedIndex].classList.add("is-active");
+                currentIndex = normalizedIndex;
+
+                // После смены активного слайда актуализируем высоту контейнера.
+                window.setTimeout(() => {
+                    setListHeightToSlide(currentIndex);
+                    isAnimating = false;
+                }, TRANSITION_MS);
+            };
+
+            const prevButton = sliderCollection.querySelector(".splide__arrow--prev");
+            const nextButton = sliderCollection.querySelector(".splide__arrow--next");
+
+            prevButton?.addEventListener("click", () => setActiveIndex(currentIndex - 1));
+            nextButton?.addEventListener("click", () => setActiveIndex(currentIndex + 1));
+
+            window.addEventListener("resize", () => setListHeightToSlide(currentIndex));
+        }
+    </script>
+    <style lang="scss" is:global>
+        .cb-slider-banner-collection {
+            background-color: var(--color-mocha-mous-shade);
+            & svg {
+                fill: transparent;
+            }
+        }
+        .cb-slider-banner-collection__list {
+            padding: 0;
+            margin: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .cb-slider-banner-collection__arrows {
+            & .splide__arrow--prev svg {
+                transform: rotate(0deg);
+            }
+        }
+        .cb-slide-collection {
+            grid-template-areas: ". . txt . . img img img";
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+            right: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            & :is(h3, p) {
+                font-family: var(--font-title);
+                font-weight: 400;
+                font-size: clamp(1rem, 0.8333rem + 0.7407vw, 1.5rem);
+                margin: 0 0 1.5em;
+            }
+            & p {
+                line-height: 1,4;
+            }
+
+            &.is-active {
+                opacity: 1;
+                pointer-events: auto;
+                z-index: 1;
+            }
+            @media (max-width: 767.99px) {
+                display: block;
+            }
+        }
+
+        .cb-sliders-banner-collection .splide__list {
+            /* width: 100%; */
+        }
+
+        .cb-slide-collection__image {
+            grid-area: img;
+            width: 100%;
+            max-height: 440px;
+
+            object-fit: cover;
+            object-position: center;
+            @media (min-width: 768px) {
+                height: 100%;
+            }
+        }
+        .cb-slide-collection__content {
+            grid-area: txt;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin: 2em;
+        }
+        .cb-slide-collection__group-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: clamp(1rem, 0.6667rem + 1.4815vw, 2rem);
+            text-transform: uppercase;
+
+            & > a {
+                font-weight: 500;
+            }
+        }
+
+    </style>
+</Layout>
